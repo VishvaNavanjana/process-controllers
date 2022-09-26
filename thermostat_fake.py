@@ -12,5 +12,5 @@ while True:
     temperature = random.uniform(0, 100)
     client.publish(topic, temperature)
     print("published " + str(temperature) + "to topic " + topic)
-    time.sleep(3)
+    time.sleep(5)
 

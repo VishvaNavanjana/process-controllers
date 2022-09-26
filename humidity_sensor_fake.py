@@ -12,5 +12,5 @@ while True:
     humidity = random.uniform(0, 100)
     client.publish(topic, humidity)
     print("published " + str(humidity) + "to topic " + topic)
-    time.sleep(3)
+    time.sleep(5)
 

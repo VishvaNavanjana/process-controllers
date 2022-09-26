@@ -15,12 +15,16 @@ tempCanChange = 2
 
 # for humidity
 humidSensorTopic = "326/humidity"
-humidControlTopic = "326/humidity/temp"
+humidControlTopic = "326/control/humidity"
 humidThreashold = 65
 humidCanChange = 2
 
 # controlling temperature
 def on_message_for_temp(client, userdata, message):
+
+    # if (message.topic != tempSensorTopic):
+    #     return
+
     print("Received Temperature " + str(message.payload.decode("utf-8")))
 
     if (float(message.payload.decode("utf-8")) < (tempThreashold - tempCanChange)):
@@ -37,6 +41,10 @@ def on_message_for_temp(client, userdata, message):
 
 # controlling humidity
 def on_message_for_humid(client, userdata, message):
+
+    # if (message.topic != humidSensorTopic):
+    #     return
+
     print("Received Humidity " + str(message.payload.decode("utf-8")))
 
     if (float(message.payload.decode("utf-8")) < (humidThreashold - humidCanChange)):
@@ -53,16 +61,34 @@ def on_message_for_humid(client, userdata, message):
 
 
 
+# def run():
+#     client.subscribe(tempSensorTopic)
+#     client.on_message = on_message_for_temp
+#     time.sleep(5)
+#     client.subscribe(humidSensorTopic)
+#     client.on_message = on_message_for_humid
+#     time.sleep(5)
+#     client.loop_forever()
+#
+# run()
+
+# def on_message(client, userdata, msg):
+#     print(msg.topic+" "+str(msg.payload))
+
+
 def run():
-    client.subscribe(tempSensorTopic)
-    client.on_message = on_message_for_temp
-    time.sleep(3)
-    client.on_message = on_message_for_humid
-    time.sleep(3)
+    client.subscribe(tempSensorTopic, 2)
+    client.subscribe(humidSensorTopic, 2)
+    client.message_callback_add(tempSensorTopic, on_message_for_temp)
+    # time.sleep(5)
+    client.message_callback_add(humidSensorTopic, on_message_for_humid)
+    # time.sleep(5)
+    # client.on_message = on_message
+
+    time.sleep(5)
     client.loop_forever()
 
 run()
-
 
 
 
