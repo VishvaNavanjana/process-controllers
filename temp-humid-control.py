@@ -10,12 +10,19 @@ client.connect(mqttBroker)
 # for temperature
 tempSensorTopic = "326/temp"
 tempControlTopic = "326/control/temp"
-
 tempThreashold = 32
 tempCanChange = 2
 
-def on_message(client, userdata, message):
-    print("Received " + str(message.payload.decode("utf-8")))
+# for humidity
+humidSensorTopic = "326/humidity"
+humidControlTopic = "326/humidity/temp"
+humidThreashold = 65
+humidCanChange = 2
+
+# controlling temperature
+def on_message_for_temp(client, userdata, message):
+    print("Received Temperature " + str(message.payload.decode("utf-8")))
+
     if (float(message.payload.decode("utf-8")) < (tempThreashold - tempCanChange)):
         client.publish(tempControlTopic, "Provide Hot Air")
         print("published 'Provide Hot Air' to topic " + tempControlTopic)
@@ -25,35 +32,37 @@ def on_message(client, userdata, message):
         print("published 'Provide Cold Air' to topic " + tempControlTopic)
 
     else:
+        client.publish(tempControlTopic, "Turn OFF")
         print("Maintainig current temperature levels")
+
+# controlling humidity
+def on_message_for_humid(client, userdata, message):
+    print("Received Humidity " + str(message.payload.decode("utf-8")))
+
+    if (float(message.payload.decode("utf-8")) < (humidThreashold - humidCanChange)):
+        client.publish(tempControlTopic, "Provide Hot Air")
+        print("published 'Increase Humidity' to topic " + humidControlTopic)
+
+    elif (float(message.payload.decode("utf-8")) > (tempThreashold + tempCanChange)):
+        client.publish(tempControlTopic, "Provide Cold Air")
+        print("published 'Decrease Humidity' to topic " + humidControlTopic)
+
+    else:
+        client.publish(humidControlTopic, "Turn OFF")
+        print("Maintainig current Humidity levels")
+
 
 
 def run():
     client.subscribe(tempSensorTopic)
-    client.on_message = on_message
-    time.sleep(1)
+    client.on_message = on_message_for_temp
+    time.sleep(3)
+    client.on_message = on_message_for_humid
+    time.sleep(3)
     client.loop_forever()
 
 run()
 
 
-# client.loop_start()
-# client.subscribe(tempTopic)
-# client.on_message = on_message
-# time.sleep(1)
-# client.loop_end()
 
-
-
-# get data from the thermostat and humidity sensor (todo)
-
-# validate data
-
-
-
-# check temp
-
-# check humidity
-
-# send data
 
