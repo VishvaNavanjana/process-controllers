@@ -1,6 +1,8 @@
 import paho.mqtt.client as mqtt
 import random
 import time
+import json
+import datetime
 
 mqttBroker = "mqtt.eclipseprojects.io"
 client =mqtt.Client("Thermostat")
@@ -10,8 +12,11 @@ topic = "326/sensor/humidity"
 
 while True:
     client.connect(mqttBroker)
-    humidity = random.uniform(0, 100)
-    client.publish(topic, humidity)
-    print("published " + str(humidity) + "to topic " + topic)
+    x = {
+        "time": datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S'),
+        "humid": random.uniform(0, 100)
+    }
+    client.publish(topic, json.dumps(x))
+    print("published " + str(x) + " to topic " + topic)
     time.sleep(5)
 

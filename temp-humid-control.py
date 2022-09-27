@@ -1,7 +1,7 @@
 
 
 import paho.mqtt.client as mqtt
-import time
+import json
 
 mqttBroker = "mqtt.eclipseprojects.io"
 client = mqtt.Client("temp-humid-controller")
@@ -21,13 +21,24 @@ humidCanChange = 2
 
 # controlling temperature
 def on_message_for_temp(client, userdata, message):
-    print("Received Temperature " + str(message.payload.decode("utf-8")))
+    data = json.loads(message.payload)
+    print(data)
 
-    if (float(message.payload.decode("utf-8")) < (tempThreashold - tempCanChange)):
+    # data validation
+    length = len(data)
+    keys = list(data.keys())
+    values = list(data.values())
+    if (length != 2 or keys[0] != 'time' or keys[1] != 'temp'):
+        return
+
+    temperature = values[1]
+    print("Received Temperature " + str(temperature))
+
+    if (temperature < (tempThreashold - tempCanChange)):
         client.publish(tempControlTopic, "Provide Hot Air")
         print("published 'Provide Hot Air' to topic " + tempControlTopic)
 
-    elif (float(message.payload.decode("utf-8")) > (tempThreashold + tempCanChange)):
+    elif (temperature > (tempThreashold + tempCanChange)):
         client.publish(tempControlTopic, "Provide Cold Air")
         print("published 'Provide Cold Air' to topic " + tempControlTopic)
 
@@ -35,21 +46,53 @@ def on_message_for_temp(client, userdata, message):
         client.publish(tempControlTopic, "Turn OFF")
         print("Maintainig current temperature levels")
 
+    print()
+
+
+    # print("Received Temperature " + str(message.payload.decode("utf-8")))
+    #
+    # if (float(message.payload.decode("utf-8")) < (tempThreashold - tempCanChange)):
+    #     client.publish(tempControlTopic, "Provide Hot Air")
+    #     print("published 'Provide Hot Air' to topic " + tempControlTopic)
+    #
+    # elif (float(message.payload.decode("utf-8")) > (tempThreashold + tempCanChange)):
+    #     client.publish(tempControlTopic, "Provide Cold Air")
+    #     print("published 'Provide Cold Air' to topic " + tempControlTopic)
+    #
+    # else:
+    #     client.publish(tempControlTopic, "Turn OFF")
+    #     print("Maintainig current temperature levels")
+
 # controlling humidity
 def on_message_for_humid(client, userdata, message):
-    print("Received Humidity " + str(message.payload.decode("utf-8")))
 
-    if (float(message.payload.decode("utf-8")) < (humidThreashold - humidCanChange)):
+    data = json.loads(message.payload)
+    print(data)
+
+    # data validation
+    length = len(data)
+    keys = list(data.keys())
+    values = list(data.values())
+    if (length != 2 or keys[0] != 'time' or keys[1] != 'humid'):
+        return
+
+    humidity = values[1]
+
+    print("Received Humidity " + str(humidity))
+
+    if (humidity < (humidThreashold - humidCanChange)):
         client.publish(tempControlTopic, "Provide Hot Air")
         print("published 'Increase Humidity' to topic " + humidControlTopic)
 
-    elif (float(message.payload.decode("utf-8")) > (tempThreashold + tempCanChange)):
+    elif (humidity > (tempThreashold + tempCanChange)):
         client.publish(tempControlTopic, "Provide Cold Air")
         print("published 'Decrease Humidity' to topic " + humidControlTopic)
 
     else:
         client.publish(humidControlTopic, "Turn OFF")
         print("Maintainig current Humidity levels")
+
+    print()
 
 
 
