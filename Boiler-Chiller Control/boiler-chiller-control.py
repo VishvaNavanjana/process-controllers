@@ -18,14 +18,31 @@ tempHotAirThreashold = 15
 tempCanChange = 2
 
 
-
-
 def on_message_for_cold_air_duct(client, userdata, message):
     data = json.loads(message.payload)
-    print(data)
+    # print(data)
+    
+    # data validation
+    length = len(data)
+    keys = list(data.keys())
+    values = list(data.values())
+    if (length != 2 or keys[0] != 'time' or keys[1] != 'temp'):
+        return
+    
+    temperature = values[1]
+    print("Received Temperature " + str(temperature))
+    
+    if (temperature > (tempColdAirThreashold + tempCanChange)):
+        client.publish(tempColdAirControlTopic , "Chiller ON")
+        print("published 'Chiller ON' to topic " + tempColdAirControlTopic)
+    #on desired temparatures
+    elif (temperature < (tempColdAirThreashold + tempCanChange) and  temperature > (tempColdAirThreashold - tempCanChange)):
+        client.publish(tempColdAirControlTopic , "Chiller OFF")
+        print("published 'Chiller OFF' to topic " + tempColdAirControlTopic)
 
+    print()
 
-client.message_callback_add(tempColdAirSensorTopic, on_message_for_temp)
-client.connect("vpn.ce.pdn.ac.lk", port=8883)
+client.message_callback_add(tempColdAirSensorTopic, on_message_for_cold_air_duct)
+client.connect(mqttBroker, port=8883)
 client.subscribe("326/sensor/#")
 client.loop_forever()
