@@ -30,7 +30,7 @@ def on_message_for_cold_air_duct(client, userdata, message):
         return
     
     temperature = values[1]
-    print("Received Temperature " + str(temperature))
+    print("Received Temperature from cold air duct " + str(temperature))
     
     if (temperature > (tempColdAirThreashold + tempCanChange)):
         client.publish(tempColdAirControlTopic , "Chiller ON")
@@ -55,7 +55,7 @@ def on_message_for_hot_air_duct(client, userdata, message):
         return
     
     temperature = values[1]
-    print("Received Temperature " + str(temperature))
+    print("Received Temperature from hot air duct" + str(temperature))
     
     if (temperature < (tempHotAirThreashold - tempCanChange)):
         client.publish(tempHotAirControlTopic , "Boiler ON")
