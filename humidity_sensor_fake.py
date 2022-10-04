@@ -11,7 +11,7 @@ client =mqtt.Client("Thermostat")
 topic = "326/sensor/humidity"
 
 while True:
-    client.connect(mqttBroker)
+    client.connect("vpn.ce.pdn.ac.lk", port=8883)
     x = {
         "time": datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S'),
         "humid": random.uniform(0, 100)

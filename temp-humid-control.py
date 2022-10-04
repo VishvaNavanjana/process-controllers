@@ -114,7 +114,7 @@ def on_message_for_humid(client, userdata, message):
 #
 client.message_callback_add(tempSensorTopic, on_message_for_temp)
 client.message_callback_add(humidSensorTopic, on_message_for_humid)
-client.connect(mqttBroker)
+client.connect("vpn.ce.pdn.ac.lk", port=8883)
 client.subscribe("326/sensor/#")
 client.loop_forever()
 #
