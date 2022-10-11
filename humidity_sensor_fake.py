@@ -8,7 +8,7 @@ mqttBroker = "mqtt.eclipseprojects.io"
 client =mqtt.Client("Thermostat")
 # client.connect(mqttBroker)
 
-topic = "326/sensor/humidity"
+topic = "326project/smartbuilding/hvac/sensor/humidity/zoneX/"
 
 while True:
     client.connect("vpn.ce.pdn.ac.lk", port=8883)

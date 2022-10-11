@@ -2,20 +2,21 @@
 
 import paho.mqtt.client as mqtt
 import json
+import datetime
 
 mqttBroker = "mqtt.eclipseprojects.io"
 client = mqtt.Client("temp-humid-controller")
 # client.connect(mqttBroker)
 
 # for temperature
-tempSensorTopic = "326/sensor/temp"
-tempControlTopic = "326/control/temp"
+tempSensorTopic = "326project/smartbuilding/hvac/sensor/temperature/zoneX/"
+tempControlTopic = "326project/smartbuilding/hvac/control/boiler/"
 tempThreashold = 32
 tempCanChange = 2
 
 # for humidity
-humidSensorTopic = "326/sensor/humidity"
-humidControlTopic = "326/control/humidity"
+humidSensorTopic = "326project/smartbuilding/hvac/sensor/humidity/zoneX/"
+humidControlTopic = "326project/smartbuilding/hvac/control/chiller/"
 humidThreashold = 65
 humidCanChange = 2
 
@@ -35,11 +36,21 @@ def on_message_for_temp(client, userdata, message):
     print("Received Temperature " + str(temperature))
 
     if (temperature < (tempThreashold - tempCanChange)):
-        client.publish(tempControlTopic, "Provide Hot Air")
+
+        x = {
+            "time": datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S'),
+            "state": 1
+        }
+        client.publish(tempControlTopic, json.dumps(x))
         print("published 'Provide Hot Air' to topic " + tempControlTopic)
 
     elif (temperature > (tempThreashold + tempCanChange)):
-        client.publish(tempControlTopic, "Provide Cold Air")
+
+        x = {
+            "time": datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S'),
+            "state": 0
+        }
+        client.publish(tempControlTopic, json.dumps(x))
         print("published 'Provide Cold Air' to topic " + tempControlTopic)
 
     else:
@@ -85,7 +96,7 @@ def on_message_for_humid(client, userdata, message):
 client.message_callback_add(tempSensorTopic, on_message_for_temp)
 client.message_callback_add(humidSensorTopic, on_message_for_humid)
 client.connect("vpn.ce.pdn.ac.lk", port=8883)
-client.subscribe("326/sensor/#")
+client.subscribe([("326project/smartbuilding/hvac/sensor/temperature/zoneX/", 0), ("326project/smartbuilding/hvac/sensor/humidity/zoneX/", 0)])
 client.loop_forever()
 #
 
