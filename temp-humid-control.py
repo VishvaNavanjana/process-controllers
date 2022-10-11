@@ -78,11 +78,21 @@ def on_message_for_humid(client, userdata, message):
     print("Received Humidity " + str(humidity))
 
     if (humidity < (humidThreashold - humidCanChange)):
-        client.publish(tempControlTopic, "Provide Hot Air")
+
+        x = {
+            "time": datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S'),
+            "state": 1
+        }
+        client.publish(tempControlTopic, json.dumps(x))
         print("published 'Increase Humidity' to topic " + humidControlTopic)
 
     elif (humidity > (tempThreashold + tempCanChange)):
-        client.publish(tempControlTopic, "Provide Cold Air")
+
+        x = {
+            "time": datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S'),
+            "state": 0
+        }
+        client.publish(tempControlTopic, json.dumps(x))
         print("published 'Decrease Humidity' to topic " + humidControlTopic)
 
     else:
