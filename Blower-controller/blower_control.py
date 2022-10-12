@@ -21,8 +21,8 @@ humidityPrevious = 50 # default value
 
 blowerControlTopic = "326project/smartbuilding/hvac/control/blower/"
 
-tempThreasholdChangeTopic = "326project/smartbuilding/hvac/change/temp-thresh"
-
+tempThreasholdChangeTopic = "326project/smartbuilding/hvac/change/temp-threash"
+humidThreasholdChangeTopic = "326project/smartbuilding/hvac/change/humid-threash"
 
 # changing temp threashold value
 def on_message_for_temp_threshold(client, userdata, message):
@@ -34,6 +34,19 @@ def on_message_for_temp_threshold(client, userdata, message):
     print()
     print("**********************************")
     print("new threashold temperature is " + str(tempThreashold))
+    print("**********************************")
+    print()
+
+# changing humid threashold value
+def on_message_for_humid_threshold(client, userdata, message):
+    data = json.loads(message.payload)
+
+    global humidThreashold
+    values = list(data.values())
+    humidThreashold = values[1]
+    print()
+    print("**********************************")
+    print("new humidThreashold temperature is " + str(humidThreashold))
     print("**********************************")
     print()
 
@@ -108,8 +121,9 @@ def create_blower_control_command(temp, humid):
 client.message_callback_add(tempSensorTopic, on_message_for_temp)
 client.message_callback_add(humidSensorTopic, on_message_for_humid)
 client.message_callback_add(tempThreasholdChangeTopic, on_message_for_temp_threshold)
+client.message_callback_add(humidThreasholdChangeTopic, on_message_for_humid_threshold)
 client.connect("vpn.ce.pdn.ac.lk", port=8883)
-client.subscribe([(tempSensorTopic, 0), (humidSensorTopic, 0), (tempThreasholdChangeTopic, 0)])
+client.subscribe([(tempSensorTopic, 0), (humidSensorTopic, 0), (tempThreasholdChangeTopic, 0), (humidThreasholdChangeTopic, 0)])
 client.loop_forever()
 #
 
