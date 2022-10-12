@@ -6,13 +6,13 @@ import datetime
 
 mqttBroker = "vpn.ce.pdn.ac.lk"
 client =mqtt.Client("Thermostat")
-topic = "326/sensor/coldairduct"
+topic = "326project/smartbuilding/hvac/coldairduct/temperature"
 
 while True:
     client.connect(mqttBroker, port=8883)
     x = {
         "time": datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S'),
-        "temp": random.uniform(0, 100)
+        "temp": random.uniform(10, 30)
     }
 
     client.publish(topic, json.dumps(x))
