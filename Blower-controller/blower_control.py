@@ -9,16 +9,16 @@ client = mqtt.Client("blower-controller")
 
 # for temperature
 tempSensorTopic = "326project/smartbuilding/hvac/sensor/temperature/floorX/roomX"
-tempThreashold = 32
-tempCanChange = 2
+tempThreashold = 50
+tempCanChange = 5
 
 # for humidity
 humidSensorTopic = "326project/smartbuilding/hvac/sensor/humidity/floorX/roomX"
-humidThreashold = 65
-humidCanChange = 2
+humidThreashold = 50
+humidCanChange = 5
 
-tempPrevious = 28 # default value
-humidityPrevious = 45 # default value
+tempPrevious = 50 # default value
+humidityPrevious = 50 # default value
 
 blowerControlTopic = "control/blower"
 
