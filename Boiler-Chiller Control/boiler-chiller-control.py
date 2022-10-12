@@ -5,13 +5,13 @@ mqttBroker = "vpn.ce.pdn.ac.lk"
 client = mqtt.Client("boiler-chiller-controller")
 
 #temperature at cold air duct
-tempColdAirSensorTopic = "326/sensor/coldairduct"
-tempColdAirControlTopic = "326/control/coldairduct"
+tempColdAirSensorTopic = "326project/smartbuilding/hvac/coldairduct/temperature" 
+tempColdAirControlTopic = "326project/smartbuilding/hvac/control/chiller"
 tempColdAirThreashold = 25
 
 #temparature at hot air duct
-tempHotAirSensorTopic = "326/sensor/hotairduct"
-tempHotAirControlTopic = "326/control/hotairduct"
+tempHotAirSensorTopic = "326project/smartbuilding/hvac/hotairduct/temperature"
+tempHotAirControlTopic = "326project/smartbuilding/hvac/control/boiler"
 tempHotAirThreashold = 15
 
 #temparature range that allowed
