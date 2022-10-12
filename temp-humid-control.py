@@ -9,13 +9,13 @@ client = mqtt.Client("temp-humid-controller")
 # client.connect(mqttBroker)
 
 # for temperature
-tempSensorTopic = "326project/smartbuilding/hvac/sensor/temperature/zoneX/"
+tempSensorTopic = "326project/smartbuilding/hvac/sensor/temperature/floorX/roomX"
 tempControlTopic = "326project/smartbuilding/hvac/control/boiler/"
 tempThreashold = 32
 tempCanChange = 2
 
 # for humidity
-humidSensorTopic = "326project/smartbuilding/hvac/sensor/humidity/zoneX/"
+humidSensorTopic = "326project/smartbuilding/hvac/sensor/humidity/floorX/roomX"
 humidControlTopic = "326project/smartbuilding/hvac/control/chiller/"
 humidThreashold = 65
 humidCanChange = 2
@@ -106,7 +106,7 @@ def on_message_for_humid(client, userdata, message):
 client.message_callback_add(tempSensorTopic, on_message_for_temp)
 client.message_callback_add(humidSensorTopic, on_message_for_humid)
 client.connect("vpn.ce.pdn.ac.lk", port=8883)
-client.subscribe([("326project/smartbuilding/hvac/sensor/temperature/zoneX/", 0), ("326project/smartbuilding/hvac/sensor/humidity/zoneX/", 0)])
+client.subscribe([("326project/smartbuilding/hvac/sensor/temperature/floorX/roomX", 0), ("326project/smartbuilding/hvac/sensor/humidity/floorX/roomX", 0)])
 client.loop_forever()
 #
 
