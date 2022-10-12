@@ -5,7 +5,6 @@ import json
 import datetime
 
 client = mqtt.Client("blower-controller")
-# client.connect(mqttBroker)
 
 # for temperature
 tempSensorTopic = "326project/smartbuilding/hvac/sensor/temperature/floorX/roomX"
@@ -20,7 +19,7 @@ humidCanChange = 5
 tempPrevious = 50 # default value
 humidityPrevious = 50 # default value
 
-blowerControlTopic = "control/blower"
+blowerControlTopic = "326project/smartbuilding/hvac/control/blower/"
 
 
 # controlling temperature
