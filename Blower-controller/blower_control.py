@@ -46,7 +46,7 @@ def on_message_for_humid_threshold(client, userdata, message):
     humidThreashold = values[1]
     print()
     print("**********************************")
-    print("new humidThreashold temperature is " + str(humidThreashold))
+    print("new humidThreashold humidity is " + str(humidThreashold))
     print("**********************************")
     print()
 
