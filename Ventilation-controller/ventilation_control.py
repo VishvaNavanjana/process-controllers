@@ -5,12 +5,30 @@ mqttBroker = "vpn.ce.pdn.ac.lk"
 client = mqtt.Client("boiler-chiller-controller")
 
 #Air flowrate mqtt topic
-airFlowrateSensorTopic = "326/sensor/coldairduct"  #subscriber
-airFlowrateControlTopic = "326/control/coldairduct"     #publisher
+airFlowrateSensorTopic = "326project/smartbuilding/hvac/coldairduct/airflowrate"  #subscriber
+airFlowrateControlTopic = "326project/smartbuilding/hvac/control/coldairduct/airflowrate"     #publisher
 airFlowrateThreashold = 25
+
+flowrateThreasholdChangeTopic = "326project/smartbuilding/hvac/change/flowrate-threash"
 
 #flowrate allowed
 flowrateCanChange = 2
+
+
+# changing temp threashold value of flow rate
+def on_message_for_flowrate_threshold(client, userdata, message):
+    data = json.loads(message.payload)
+
+    global airFlowrateThreashold
+    values = list(data.values())
+    airFlowrateThreashold = values[1]
+    print()
+    print("**********************************")
+    print("new threashold flow rate of Cold Air is " + str(airFlowrateThreashold))
+    print("**********************************")
+    print()
+
+
 
 def on_message_for_airflow(client, userdata, message):
 
@@ -47,6 +65,7 @@ def on_message_for_airflow(client, userdata, message):
     print()
 
 client.message_callback_add(airFlowrateSensorTopic, on_message_for_airflow)
+client.message_callback_add(flowrateThreasholdChangeTopic, on_message_for_flowrate_threshold)
 client.connect(mqttBroker, port=8883)
-client.subscribe("326/sensor/coldairduct")
+client.subscribe([(airFlowrateSensorTopic, 0), (flowrateThreasholdChangeTopic, 0)])
 client.loop_forever()
